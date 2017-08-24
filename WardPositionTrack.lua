@@ -1,7 +1,8 @@
 local WardPositionTrack = {}
 
-WardPositionTrack.Enable = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Enable", "Show in game map ward position")
+WardPositionTrack.Enable = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward PositionA}}Enable", "Show in game map ward position v0.2")
 WardPositionTrack.EnablePanel = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Panel", "Show ward list")
+WardPositionTrack.EnableCircle = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Circle{{}}", "Show circle around ward")
 WardPositionTrack.Scale = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Panel size %", "Panel scale in percent", 50, 200)
 WardPositionTrack.BaseXOpt = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}X", "X Pos", 0, 2000, 20)
 WardPositionTrack.BaseYOpt = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Y", "Y Pos", 0, 2000, 10)
@@ -333,7 +334,9 @@ function WardPositionTrack.OnDraw()
 				Renderer.SetDrawColor(25, 170, 200, 255)
 			end
 			Renderer.DrawTextCentered(WardPositionTrack.Font, x1, y1, math.floor((ward.time - GameRules.GetGameTime()) / 60) .. ":" .. string.format("%02d", math.floor((ward.time - GameRules.GetGameTime()) % 60)), 1)
-			WardPositionTrack.DrawCircle(ward.position, ward.radius)
+			if Menu.IsEnabled(WardPositionTrack.EnableCircle) then
+				WardPositionTrack.DrawCircle(ward.position, ward.radius)
+			end
 			if i > ScrollPos and i <= ScrollPos + 9 and Menu.IsEnabled(WardPositionTrack.EnablePanel) then
 				Renderer.DrawText(WardPositionTrack.FontMenu, WardPositionTrack.BaseX + math.floor(20 * WardPositionTrack.ScaleMult), WardPositionTrack.BaseY + math.floor(16 * WardPositionTrack.ScaleMult) * (i - ScrollPos - 1), math.floor((ward.time - GameRules.GetGameTime()) / 60) .. ":" .. string.format("%02d", math.floor((ward.time - GameRules.GetGameTime()) % 60)))
 				if ward.type == 1 then
