@@ -1,6 +1,6 @@
 local WardPositionTrack = {}
 
-WardPositionTrack.Enable = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward PositionA}}Enable", "Show in game map ward position v0.2")
+WardPositionTrack.Enable = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward PositionA}}Enable", "Show in game map ward position v0.2.1")
 WardPositionTrack.EnablePanel = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Panel", "Show ward list")
 WardPositionTrack.EnableCircle = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Circle{{}}", "Show circle around ward")
 WardPositionTrack.Scale = Menu.AddOption({ "Utility", "Track Ward Position" }, "{{Track Ward Position}}Panel size %", "Panel scale in percent", 50, 200)
@@ -327,13 +327,15 @@ function WardPositionTrack.OnDraw()
 	__WardList = WardPositionTrack.WardList
 	for i, ward in pairs(WardPositionTrack.WardList) do
 		if ward.time > GameRules.GetGameTime() then
-			local x1, y1 = Renderer.WorldToScreen(ward.position)
-			if ward.type == 1 then
-				Renderer.SetDrawColor(255, 220, 150, 255)
-			else
-				Renderer.SetDrawColor(25, 170, 200, 255)
+			local x1, y1, visible1 = Renderer.WorldToScreen(ward.position)
+			if visible1 == 1 then
+				if ward.type == 1 then
+					Renderer.SetDrawColor(255, 220, 150, 255)
+				else
+					Renderer.SetDrawColor(25, 170, 200, 255)
+				end
+				Renderer.DrawTextCentered(WardPositionTrack.Font, x1, y1, math.floor((ward.time - GameRules.GetGameTime()) / 60) .. ":" .. string.format("%02d", math.floor((ward.time - GameRules.GetGameTime()) % 60)), 1)
 			end
-			Renderer.DrawTextCentered(WardPositionTrack.Font, x1, y1, math.floor((ward.time - GameRules.GetGameTime()) / 60) .. ":" .. string.format("%02d", math.floor((ward.time - GameRules.GetGameTime()) % 60)), 1)
 			if Menu.IsEnabled(WardPositionTrack.EnableCircle) then
 				WardPositionTrack.DrawCircle(ward.position, ward.radius)
 			end
